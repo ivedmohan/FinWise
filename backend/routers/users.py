@@ -18,11 +18,11 @@ async def rootfunction():
 @router.get("/add")
 async def add_user(name :str , email : str , dob : str, broker: str , password : str):
     # "02/12/2023"  -----(split('/'))---->  [ "02" , "12" , "2023" ] ----([::-1])---->  ["2023" , "12" , "02"]  
-    # ----(date())----> converts to date object to send to supabase
+    # ----(date())----> converts to date object to send to supabase    
     response = supabase.table('users').insert({
         'name' : name,
         'email': email,
-        'dob': date(list(map(lambda x:int(x) , *(dob.split('/')[::-1])))),
+        'dob': date(*list(map(lambda x:int(x) , (dob.split('/')[::-1])))).isoformat(),
         'broker': broker,
         'password': password
     }).execute()
