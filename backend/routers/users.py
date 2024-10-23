@@ -26,7 +26,18 @@ async def add_user(name :str , email : str , dob : str, broker: str , password :
         'broker': broker,
         'password': password
     }).execute()
-    
-    print(response)
+
+@router.get("/update")
+async def update_user(uuid: str, broker: str = None, dob: str = None, password: str = None):
+    update_data = {}
+    if dob is not None:
+        update_data['dob'] = date(*list(map(lambda x:int(x) , (dob.split('/')[::-1])))).isoformat()
+    if broker is not None:
+        update_data['broker'] = broker
+    if password is not None:
+        update_data['password'] = password
+
+    response = supabase.table('users').update(update_data).eq('uuid', uuid).execute()
+
     return response
 
