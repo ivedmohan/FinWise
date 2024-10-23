@@ -32,15 +32,13 @@ async def user_stocks(uuid: str):
 @router.get("/update_stock/")
 async def update_stock(stock_id: str, qty: int, price: float):
     existing_stock = supabase.table('stocks').select("*").eq('stock_id', stock_id).execute().data
+    
     update_data = {
-        'qty': qty,
-        'investment': price * qty,
+        'qty': qty + existing_stock['qty'],
+        'investment': existing_stock['investment'] + price * qty,
         'last_transaction_date': datetime.now().strftime(r"%Y-%m-%d")
     }
 
     response = supabase.table('stocks').update(update_data).eq('stock_id', stock_id).execute()
 
     return {"message": "Stock updated successfully", "data": response.data}
-
-
-
